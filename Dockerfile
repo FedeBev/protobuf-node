@@ -18,6 +18,6 @@ RUN cd /protobuf && \
 RUN find ${OUTDIR} -name "*.a" -delete -or -name "*.la" -delete
 
 
-FROM node:10.14-alpine
+FROM node:10.14.1-alpine
 
 COPY --from=protoc_builder /out/ /
