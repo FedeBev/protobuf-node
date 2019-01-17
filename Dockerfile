@@ -1,5 +1,5 @@
-FROM alpine:3.7 as protoc_builder
-RUN apk add --no-cache build-base curl automake autoconf libtool git zlib-dev
+FROM ubuntu:18.04 as protoc_builder
+RUN apt update && apt install -y curl build-essential apt-utils autoconf libtool
 
 ENV PROTOBUF_VERSION=3.6.1 \
     OUTDIR=/out
