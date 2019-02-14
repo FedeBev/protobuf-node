@@ -14,6 +14,7 @@ fi
 echo "[INFO] Ensuring that flow is enabled"
 # Git-flow settings
 git flow init -df
+git config gitflow.release.finish.notag true
 
 echo "[INFO] Checking branch name"
 branch_name=$(git symbolic-ref -q HEAD)
@@ -52,3 +53,16 @@ git commit -m "doc: Changelog for release ${VERSION}"
 
 echo "[INFO] Closing release"
 git flow release finish $VERSION
+
+echo "[INFO] Switching on master branch"
+git checkout master -q
+
+echo "[INFO] Tagging release"
+git tag -a "${VERSION}" -m "Release for version $VERSION"
+git tag -a "${VERSION}-slim" -m "Slim release for version $VERSION"
+git tag -a "${VERSION}-alpine" -m "Alpine release for version $VERSION"
+
+echo "[INFO] Switching on master develop"
+git checkout develop -q
+
+echo "[INFO] All done!"
