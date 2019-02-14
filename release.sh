@@ -45,7 +45,7 @@ echo "[INFO] Version '${VERSION}' is valid, starting release branch"
 git flow release start $VERSION
 
 echo "[INFO] Generating changelog for release ${VERSION}"
-npx auto-changelog --tag-pattern "${TAG_REGEX}"
+npx auto-changelog --tag-pattern "${TAG_REGEX}" -l 10 -b 10
 
 echo "[INFO] Committing changelog file"
 git add .
