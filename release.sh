@@ -38,8 +38,7 @@ else
   exit
 fi
 
-if [ $VERSION =~ $TAG_REGEX ]; then
-else
+if [[ ! $VERSION =~ $TAG_REGEX ]]; then
     echo "[ERR] Tag is invalid, must feat regex '$TAG_REGEX' (example: p3.6.1-n10.14.1)"
     exit 1
 fi
