@@ -2,6 +2,8 @@
 
 set -e
 
+
+# sudo gem install github_changelog_generator
 TAG_REGEX="^p(([0-9]+.){2}[0-9]+)-n(([0-9]+.){2}[0-9]*)$"
 
 VERSION=$1
@@ -36,7 +38,7 @@ else
   exit
 fi
 
-if [ ! $VERSION =~ $TAG_REGEX ]; then
+if [[ ! $VERSION =~ $TAG_REGEX ]]; then
     echo "[ERR] Tag is invalid, must feat regex '$TAG_REGEX' (example: p3.6.1-n10.14.1)"
     exit 1
 fi
@@ -44,13 +46,13 @@ fi
 echo "[INFO] Version '${VERSION}' is valid, starting release branch"
 git flow release start $VERSION
 
-echo "[INFO] Generating changelog for release ${VERSION}"
-npx auto-changelog --tag-pattern "${TAG_REGEX}" -l 10 -b 10
-
-echo "[INFO] Committing changelog file"
-git add .
-git commit -m "doc: Changelog for release ${VERSION}"
-
+# echo "[INFO] Generating changelog for release ${VERSION}"
+# npx auto-changelog --tag-pattern "${TAG_REGEX}" -l 10 -b 10
+# 
+# echo "[INFO] Committing changelog file"
+# git add .
+# git commit -m "doc: Changelog for release ${VERSION}"
+# 
 echo "[INFO] Closing release"
 git flow release finish $VERSION
 

@@ -1,7 +1,7 @@
 FROM ubuntu:18.04 as protoc_builder
 RUN apt update && apt install -y curl build-essential apt-utils autoconf libtool
 
-ENV PROTOBUF_VERSION=3.6.1 \
+ENV PROTOBUF_VERSION=3.7.0 \
     OUTDIR=/out
 
 # Download protobuf
