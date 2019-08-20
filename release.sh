@@ -62,7 +62,7 @@ git checkout master -q
 echo "[INFO] Tagging release"
 git tag -a "${VERSION}" -m "Release for version $VERSION"
 git tag -a "${VERSION}-slim" -m "Slim release for version $VERSION"
-git tag -a "${VERSION}-alpine" -m "Alpine release for version $VERSION"
+# git tag -a "${VERSION}-alpine" -m "Alpine release for version $VERSION"
 
 echo "[INFO] Switching on master develop"
 git checkout develop -q
