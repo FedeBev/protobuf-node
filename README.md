@@ -19,9 +19,9 @@ For example for build pipeline of node/typescript project that use static grpc c
 TS_OUT_DIR="./generated/ts"
 mkdir -p $TS_OUT_DIR
 
-docker run --rm -v $(pwd):$(pwd) -w $(pwd) fedebev/protobuf-node:p3.7.0-n10.15:latest \
+docker run --rm -v $(pwd):$(pwd) -w $(pwd)  \
     -e TS_OUT_DIR=$TS_OUT_DIR \
-    node-proto:latest \
+    fedebev/protobuf-node:latest \
         sh -c  'protoc -I ./ --plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" --js_out="import_style=commonjs,binary:${TS_OUT_DIR}" --ts_out="service=true:${TS_OUT_DIR}" ./myProto.proto && grpc_tools_node_protoc --js_out=import_style=commonjs,binary:${TS_OUT_DIR} --grpc_out=${TS_OUT_DIR} --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` -I ./ ./myProto.proto'
 
 
