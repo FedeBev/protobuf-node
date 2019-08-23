@@ -8,8 +8,8 @@ For example for build pipeline of node/typescript project that use static grpc c
 
 | Plugin | Version |
 |:-:|:-:|
-| ts-protoc-gen | 0.10.0 |
-| protoc-gen-grpc-web | 1.0.6 |
+| grpc_tools_node_protoc_ts | 2.5.4 |
+| grpc-tools | 1.8.0 |
 
 ## Usage examples
 
@@ -22,7 +22,8 @@ mkdir -p $TS_OUT_DIR
 docker run --rm -v $(pwd):$(pwd) -w $(pwd) fedebev/protobuf-node:p3.7.0-n10.15:latest \
     -e TS_OUT_DIR=$TS_OUT_DIR \
     node-proto:latest \
-    bash -c  'protoc -I ./ --plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" --js_out="import_style=commonjs,binary:${TS_OUT_DIR}" --ts_out="service=true:${TS_OUT_DIR}" ./myProto.proto'
+        sh -c  'protoc -I ./ --plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" --js_out="import_style=commonjs,binary:${TS_OUT_DIR}" --ts_out="service=true:${TS_OUT_DIR}" ./myProto.proto && grpc_tools_node_protoc --js_out=import_style=commonjs,binary:${TS_OUT_DIR} --grpc_out=${TS_OUT_DIR} --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` -I ./ ./myProto.proto'
+
 
 ```
 
@@ -31,6 +32,8 @@ docker run --rm -v $(pwd):$(pwd) -w $(pwd) fedebev/protobuf-node:p3.7.0-n10.15:l
 For more informations about TS plugin see [ts-protoc-gen](https://www.npmjs.com/package/ts-protoc-gen)
 
 ### Javascript web
+
+**WIP: removed for now**
 
 ```bash
 docker run --rm -v $(pwd):$(pwd) -w $(pwd) fedebev/protobuf-node:p3.7.0-n10.15:latest \

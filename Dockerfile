@@ -20,11 +20,13 @@ RUN find ${OUTDIR} -name "*.a" -delete -or -name "*.la" -delete
 
 FROM node:10.16
 
-ENV PROTOC_GEN_TS_PATH /protoc-gen-ts
-
 # protoc-gen-ts
-RUN npm install -g ts-protoc-gen@0.10.0
-RUN ln -s /usr/local/lib/node_modules/ts-protoc-gen/bin/protoc-gen-ts /protoc-gen-ts
+RUN npm install -g grpc_tools_node_protoc_ts@2.5.4 grpc-tools@1.8.0 --unsafe-perm
+
+RUN ln -s /usr/local/lib/node_modules/grpc_tools_node_protoc_ts/bin /grpc_tools_node_protoc_ts
+
+ENV PROTOC_GEN_TS_PATH /grpc_tools_node_protoc_ts/protoc-gen-ts
+ENV GRPC_TOOLS_NODE_PROTOC_PLUGIN_PATH /grpc_tools_node_protoc_ts/grpc_tools_node_protoc_plugin
 
 # protoc-gen-grpc-web
 RUN curl -L https://github.com/grpc/grpc-web/releases/download/1.0.6/protoc-gen-grpc-web-1.0.6-linux-x86_64 --output /usr/local/bin/protoc-gen-grpc-web
