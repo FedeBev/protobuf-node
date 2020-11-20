@@ -2,9 +2,7 @@
 
 set -e
 
-
-# sudo gem install github_changelog_generator
-TAG_REGEX="^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+TAG_REGEX="^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$"
 
 VERSION=$1
 
@@ -39,7 +37,7 @@ else
 fi
 
 if [[ ! $VERSION =~ $TAG_REGEX ]]; then
-    echo "[ERR] Tag is invalid, must feat regex '$TAG_REGEX' (example: p3.6.1-n10.14.1)"
+    echo "[ERR] Tag $VERSION is invalid, must feat semver regex '$TAG_REGEX' (example: v1.0.0)"
     exit 1
 fi
 
