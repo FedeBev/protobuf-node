@@ -45,7 +45,11 @@ jobs:
         run: ./build.sh --tag $IMAGE_NAME
 
       - name: Log into registry
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker -u ${{ secrets.DOCKERHUB_TOKEN }} --password-stdin
+        run: |
+         # Change all uppercase to lowercase
+          USER=${{ github.repository_owner }}
+          
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker -u $USER --password-stdin
 
       - name: Push image
         run: |
