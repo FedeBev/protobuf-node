@@ -1,35 +1,32 @@
-FROM ubuntu:18.04 as protoc_builder
-RUN apt update && apt install -y curl build-essential apt-utils autoconf libtool
+ARG UBUNTU_VERSION
+ARG NODE_VERSION
 
-ENV PROTOBUF_VERSION=3.9.1 \
-    OUTDIR=/out
+FROM ubuntu:${UBUNTU_VERSION} as protoc_builder
 
-# Download protobuf
-RUN mkdir -p /protobuf && \
-        curl -L https://github.com/google/protobuf/archive/v${PROTOBUF_VERSION}.tar.gz | tar xvz --strip-components=1 -C /protobuf
-#compile protobuf
-RUN cd /protobuf && \
-        autoreconf -f -i -Wall,no-obsolete && \
-        ./configure --prefix=/usr --enable-static=no && \
-        make -j2 && make install
-# install protobuf
-RUN cd /protobuf && \
-        make install DESTDIR=${OUTDIR}
-RUN find ${OUTDIR} -name "*.a" -delete -or -name "*.la" -delete
+ARG PROTOC_VERSION
+ARG GRPC_WEB_VERSION
+RUN apt-get update && apt-get install -y curl unzip && mkdir /protoc && \
+    curl -LO https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip && \
+    unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip -d /protoc && \
+    curl -LO https://github.com/grpc/grpc-web/releases/download/${GRPC_WEB_VERSION}/protoc-gen-grpc-web-${GRPC_WEB_VERSION}-linux-x86_64 && mv protoc-gen-grpc-web-${GRPC_WEB_VERSION}-linux-x86_64 /protoc-gen-grpc-web
 
 
-FROM node:10.16
+FROM node:${NODE_VERSION}-slim
 
-# protoc-gen-ts
-RUN npm install -g grpc_tools_node_protoc_ts@2.5.4 grpc-tools@1.8.0 --unsafe-perm
+ARG TS_PROTOC_GEN_VERSION
+ARG GRPC_TOOLS_VERSION
+LABEL maintainer="Federico Bevione <bevione.federico95@gmail.com>"
+RUN npm config set unsafe-perm true && npm install -g ts-protoc-gen@${TS_PROTOC_GEN_VERSION} grpc-tools@${GRPC_TOOLS_VERSION} && npm cache clean --force
 
-RUN ln -s /usr/local/lib/node_modules/grpc_tools_node_protoc_ts/bin /grpc_tools_node_protoc_ts
 
-ENV PROTOC_GEN_TS_PATH /grpc_tools_node_protoc_ts/protoc-gen-ts
-ENV GRPC_TOOLS_NODE_PROTOC_PLUGIN_PATH /grpc_tools_node_protoc_ts/grpc_tools_node_protoc_plugin
+COPY --from=protoc_builder /protoc/bin/ /usr/local/bin
+COPY --from=protoc_builder /protoc/include/ /usr/local/include
+COPY --from=protoc_builder /protoc-gen-grpc-web /usr/local/bin/protoc-gen-grpc-web
 
-# protoc-gen-grpc-web
-RUN curl -L https://github.com/grpc/grpc-web/releases/download/1.0.6/protoc-gen-grpc-web-1.0.6-linux-x86_64 --output /usr/local/bin/protoc-gen-grpc-web
-RUN chmod +x /usr/local/bin/protoc-gen-grpc-web
+RUN chmod +x /usr/local/bin/protoc-gen-grpc-web && \
+    ln -s /usr/local/lib/node_modules/ts-protoc-gen/bin/protoc-gen-ts /usr/bin/protoc-gen-ts && \
+    ln -s /usr/local/bin/grpc_tools_node_protoc_plugin /usr/bin/protoc-gen-grpc
 
-COPY --from=protoc_builder /out/ /
+ENV LD_LIBRARY_PATH='/usr/lib:/usr/lib64:/usr/lib/local'
+
+ENTRYPOINT ["protoc", "-I/usr/include"]

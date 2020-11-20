@@ -1,46 +1,109 @@
-# What is?
+# protobuf-node
+
+## What
+
 Docker image based on node-alpine image with protobuf
 
-## Why?
-For example for build pipeline of node/typescript project that use static grpc code generation 
+## Why
 
-## Plugin versions
+For example for build pipeline of node/typescript project that uses static grpc code generation
 
-| Plugin | Version |
+## Modules versions
+
+| Modules | Version |
 |:-:|:-:|
-| grpc_tools_node_protoc_ts | 2.5.4 |
-| grpc-tools | 1.8.0 |
+| node | 14.15 |
+| protoc | 3.13.0 |
+| ts-protoc-gen | 0.13.0 |
+| grpc-tools | 1.9.1 |
+| grpc-web | 1.2.1 |
 
 ## Usage examples
 
-### Typescript
-```bash
-# Directory to write generated code to (.js and .d.ts files)
-TS_OUT_DIR="./generated/ts"
-mkdir -p $TS_OUT_DIR
+### grpc
 
-docker run --rm -v $(pwd):$(pwd) -w $(pwd)  \
-    -e TS_OUT_DIR=$TS_OUT_DIR \
-    fedebev/protobuf-node:latest \
-        sh -c  'protoc -I ./ --plugin="protoc-gen-ts=${PROTOC_GEN_TS_PATH}" --js_out="import_style=commonjs,binary:${TS_OUT_DIR}" --ts_out="service=true:${TS_OUT_DIR}" ./myProto.proto && grpc_tools_node_protoc --js_out=import_style=commonjs,binary:${TS_OUT_DIR} --grpc_out=${TS_OUT_DIR} --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` -I ./ ./myProto.proto'
+Generate files for to be used with [grpc](https://www.npmjs.com/package/grpc)
 
+typescript:
 
+```shell script
+docker run --rm \
+    -v $(pwd):$(pwd) \
+    -w $(pwd) fedebev/protobuf-node:latest \
+    -I=${PROTO_PATH} --js_out="import_style=commonjs,binary:${OUT_DIR}" --ts_out="service=grpc-node:${OUT_DIR}" --grpc_out="${OUT_DIR}" ${FILES}
 ```
 
-**NOTE**: Variable `PROTOC_GEN_TS_PATH` is already defined in the container
+node:
 
-For more informations about TS plugin see [ts-protoc-gen](https://www.npmjs.com/package/ts-protoc-gen)
-
-### Javascript web
-
-**WIP: removed for now**
-
-```bash
-docker run --rm -v $(pwd):$(pwd) -w $(pwd) fedebev/protobuf-node:p3.7.0-n10.15:latest \
-    protoc user-manager.proto \
-    -I ./ \
-    --js_out=import_style=commonjs:$JS_OUT_DIR \
-    --grpc-web_out=import_style=commonjs,mode=grpcwebtext:$JS_OUT_DIR
+```shell script
+docker run --rm \
+    -v $(pwd):$(pwd) \
+    -w $(pwd) fedebev/protobuf-node:latest \
+    -I=${PROTO_PATH} --js_out="import_style=commonjs,binary:${OUT_DIR}" --grpc_out="${OUT_DIR}" ${FILES}
 ```
 
-For more information about js web build see [grpc-web](https://github.com/grpc/grpc-web)
+### grpc-js
+
+Generate files for to be used with [@grpc/grpc-js](https://www.npmjs.com/package/@grpc/grpc-js)
+
+typescript:
+
+```shell script
+docker run --rm \
+    -v $(pwd):$(pwd) \
+    -w $(pwd) fedebev/protobuf-node:latest \
+    -I=${PROTO_PATH} --js_out="import_style=commonjs,binary:${OUT_DIR}"  --ts_out="service=grpc-node,mode=grpc-js:${OUT_DIR}" --grpc_out="grpc_js:${OUT_DIR}" ${FILES}
+```
+
+node:
+
+```shell script
+docker run --rm \
+    -v $(pwd):$(pwd) \
+    -w $(pwd) fedebev/protobuf-node:latest \
+    -I=${PROTO_PATH} --js_out="import_style=commonjs,binary:${OUT_DIR}" --grpc_out="grpc_js:${OUT_DIR}" ${FILES}
+```
+
+### improbable-eng/grpc-web
+
+Generate files for to be used with [@improbable-eng/grpc-web](https://www.npmjs.com/package/@improbable-eng/grpc-web)
+
+typescript:
+
+```shell script
+docker run --rm \
+    -v $(pwd):$(pwd) \
+    -w $(pwd) fedebev/protobuf-node:latest \
+    -I=${PROTO_PATH} --js_out="import_style=commonjs,binary:${OUT_DIR}"  --ts_out="service=grpc-web:${OUT_DIR}" --grpc_out="${OUT_DIR}" ${FILES}
+```
+
+javascript:
+
+```shell script
+docker run --rm \
+    -v $(pwd):$(pwd) \
+    -w $(pwd) fedebev/protobuf-node:latest \
+    -I=${PROTO_PATH} --js_out="import_style=commonjs,binary:${OUT_DIR}" --grpc_out="${OUT_DIR}" ${FILES}
+```
+
+### grpc-web
+
+Generate files for to be used with [grpc-web](https://www.npmjs.com/package/grpc-web)
+
+typescript:
+
+```shell script
+docker run --rm \
+    -v $(pwd):$(pwd) \
+    -w $(pwd) fedebev/protobuf-node:latest \
+    -I=${PROTO_PATH} --js_out="import_style=commonjs,binary:${OUT_DIR}"  --grpc-web_out="import_style=commonjs+dts,mode=grpcwebtext:${OUT_DIR}" ${FILES}
+```
+
+javascript:
+
+```shell script
+docker run --rm \
+    -v $(pwd):$(pwd) \
+    -w $(pwd) fedebev/protobuf-node:latest \
+    -I=${PROTO_PATH} --js_out="import_style=commonjs,binary:${OUT_DIR}"  --grpc-web_out="import_style=commonjs,mode=grpcwebtext:${OUT_DIR}" ${FILES}
+```

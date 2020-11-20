@@ -4,7 +4,7 @@ set -e
 
 
 # sudo gem install github_changelog_generator
-TAG_REGEX="^p(([0-9]+.){2}[0-9]+)-n(([0-9]+.){2}[0-9]*)$"
+TAG_REGEX="^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-((?:0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9][0-9]*|[0-9]*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
 
 VERSION=$1
 
@@ -46,13 +46,6 @@ fi
 echo "[INFO] Version '${VERSION}' is valid, starting release branch"
 git flow release start $VERSION
 
-# echo "[INFO] Generating changelog for release ${VERSION}"
-# npx auto-changelog --tag-pattern "${TAG_REGEX}" -l 10 -b 10
-# 
-# echo "[INFO] Committing changelog file"
-# git add .
-# git commit -m "doc: Changelog for release ${VERSION}"
-# 
 echo "[INFO] Closing release"
 git flow release finish $VERSION
 
@@ -61,8 +54,6 @@ git checkout master -q
 
 echo "[INFO] Tagging release"
 git tag -a "${VERSION}" -m "Release for version $VERSION"
-git tag -a "${VERSION}-slim" -m "Slim release for version $VERSION"
-# git tag -a "${VERSION}-alpine" -m "Alpine release for version $VERSION"
 
 echo "[INFO] Switching on master develop"
 git checkout develop -q
