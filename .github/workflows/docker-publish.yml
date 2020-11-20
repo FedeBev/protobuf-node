@@ -48,8 +48,8 @@ jobs:
         run: |
          # Change all uppercase to lowercase
           USER=${{ github.repository_owner }}
-          
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker -u $USER --password-stdin
+
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u $USER --password-stdin
 
       - name: Push image
         run: |
