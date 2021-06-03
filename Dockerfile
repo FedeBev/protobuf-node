@@ -13,11 +13,11 @@ RUN apt-get update && apt-get install -y curl unzip && mkdir /protoc && \
 
 FROM node:${NODE_VERSION}-slim
 
+
 ARG TS_PROTOC_GEN_VERSION
 ARG GRPC_TOOLS_VERSION
 LABEL maintainer="Federico Bevione <bevione.federico95@gmail.com>"
 RUN npm config set unsafe-perm true && npm install -g ts-protoc-gen@${TS_PROTOC_GEN_VERSION} grpc-tools@${GRPC_TOOLS_VERSION} && npm cache clean --force
-
 
 COPY --from=protoc_builder /protoc/bin/ /usr/local/bin
 COPY --from=protoc_builder /protoc/include/ /usr/local/include

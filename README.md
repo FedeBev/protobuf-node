@@ -12,10 +12,10 @@ For example for build pipeline of node/typescript project that uses static grpc 
 
 | Modules | Version |
 |:-:|:-:|
-| node | 14.15 |
-| protoc | 3.13.0 |
-| ts-protoc-gen | 0.13.0 |
-| grpc-tools | 1.9.1 |
+| node | 14.17 |
+| protoc | 3.17.2 |
+| ts-protoc-gen | 0.15.0 |
+| grpc-tools | 1.11.1 |
 | grpc-web | 1.2.1 |
 
 ## Usage examples
